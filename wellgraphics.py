@@ -9,10 +9,17 @@ from matplotlib.figure import Figure
 
 class WellPlot:
 	def __init__(self, window):
+		self.window = window
 		self.figure = Figure(figsize=(6, 6), dpi=100)
 		self.plot = self.figure.add_subplot(1, 1, 1)
 		self.canvas = FigureCanvasTkAgg(self.figure, window)
 		self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+
+	def replot(self, a, b):
+		self.plot.plot(a, b, color="red", marker="o", linestyle="")
+		self.canvas.draw()
+		#self.canvas = FigureCanvasTkAgg(self.figure, self.window)
+		#self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
 
 
 class WellUI:
@@ -66,7 +73,8 @@ class WellUI:
 		print(self.b)
 		self.a_entry.delete(0, tk.END)
 		self.b_entry.delete(0, tk.END)
-	
+		self.plot_canvas.replot(self.a, self.b)
+
 	# Static Methods.
 	@staticmethod
 	def to_float(s):
