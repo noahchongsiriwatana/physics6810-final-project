@@ -69,8 +69,6 @@ class WellUI:
 	def apply_params(self):
 		self.a = WellUI.to_float(self.a_entry.get())
 		self.b = WellUI.to_float(self.b_entry.get())
-		print(self.a)
-		print(self.b)
 		self.a_entry.delete(0, tk.END)
 		self.b_entry.delete(0, tk.END)
 		self.plot_canvas.replot(self.a, self.b)
