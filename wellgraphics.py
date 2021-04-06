@@ -21,7 +21,7 @@ class WellPlot:
 		#self.plot.plot(a, b, color="red", marker="o", linestyle="")
 		self.plot.clear()
 		self.plot.set_title("Probability Density, a=" + str(a) + ", b=" + str(b) + ", n=" + str(energy_level))
-		self.bounds = patches.Ellipse((0, 0), 2*a, 2*b)
+		self.bounds = patches.Ellipse((0, 0), 2*a, 2*b, edgecolor='black', facecolor='none')
 		self.plot.add_patch(self.bounds)
 		bound = WellPlot.find_bound(a, b)
 		self.plot.set_xlim([-bound, bound])
@@ -60,7 +60,13 @@ class WellUI:
 		# Creates entry fields.
 		self.a_entry = tk.Entry(master=self.frm_ellipse)
 		self.b_entry = tk.Entry(master=self.frm_ellipse)
-		self.level_slider = tk.Scale(master=self.frm_ellipse, from_=0, to=10, orient=tk.HORIZONTAL)
+		self.level_slider = tk.Scale(
+			master=self.frm_ellipse,
+			from_=0,
+			to=10,
+			orient=tk.HORIZONTAL,
+			command=self.apply_params
+		)
 		self.lbl_a = tk.Label(master=self.frm_ellipse, text="Enter a:")
 		self.lbl_b = tk.Label(master=self.frm_ellipse, text="Enter b:")
 		self.lbl_level = tk.Label(master=self.frm_ellipse, text="Set energy:")
@@ -68,8 +74,8 @@ class WellUI:
 		self.a_entry.pack()
 		self.lbl_b.pack()
 		self.b_entry.pack()
-		self.level_slider.pack()
 		self.lbl_level.pack()
+		self.level_slider.pack()
 		# Creates submit button.
 		self.frm_submit = tk.Frame()
 		self.btn_submit = tk.Button(
@@ -84,7 +90,7 @@ class WellUI:
 		self.frm_submit.pack()
 		self.window.mainloop()
 
-	def apply_params(self):
+	def apply_params(self, energy_level=0):
 		self.a = max(1, WellUI.to_float(self.a_entry.get()))
 		self.b = max(1, WellUI.to_float(self.b_entry.get()))
 		self.energy_level = self.level_slider.get()
