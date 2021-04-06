@@ -1,11 +1,13 @@
 # Module for well application components.
 
 import re
+import math
 import tkinter as tk
 import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
+from matplotlib import patches
 
 class WellPlot:
 	def __init__(self, window):
@@ -15,12 +17,23 @@ class WellPlot:
 		self.canvas = FigureCanvasTkAgg(self.figure, window)
 		self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
 
-	def replot(self, a, b):
-		self.plot.plot(a, b, color="red", marker="o", linestyle="")
+	def replot(self, a, b, energy_level):
+		#self.plot.plot(a, b, color="red", marker="o", linestyle="")
+		self.plot.clear()
+		self.plot.set_title("Probability Density, a=" + str(a) + ", b=" + str(b) + ", n=" + str(energy_level))
+		self.bounds = patches.Ellipse((0, 0), 2*a, 2*b)
+		self.plot.add_patch(self.bounds)
+		bound = WellPlot.find_bound(a, b)
+		self.plot.set_xlim([-bound, bound])
+		self.plot.set_ylim([-bound, bound])
 		self.canvas.draw()
 		#self.canvas = FigureCanvasTkAgg(self.figure, self.window)
 		#self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
 
+	@staticmethod
+	def find_bound(a, b):
+		high = max(a, b)
+		return 1.1*high
 
 class WellUI:
 	# Class variables.
@@ -31,6 +44,7 @@ class WellUI:
 		# Initial parameters.
 		self.a = 1
 		self.b = 1
+		self.energy_level = 0
 		# Creates window.
 		self.window = tk.Tk()
 		# Creates title.
@@ -46,12 +60,16 @@ class WellUI:
 		# Creates entry fields.
 		self.a_entry = tk.Entry(master=self.frm_ellipse)
 		self.b_entry = tk.Entry(master=self.frm_ellipse)
+		self.level_slider = tk.Scale(master=self.frm_ellipse, from_=0, to=10, orient=tk.HORIZONTAL)
 		self.lbl_a = tk.Label(master=self.frm_ellipse, text="Enter a:")
 		self.lbl_b = tk.Label(master=self.frm_ellipse, text="Enter b:")
+		self.lbl_level = tk.Label(master=self.frm_ellipse, text="Set energy:")
 		self.lbl_a.pack()
 		self.a_entry.pack()
 		self.lbl_b.pack()
 		self.b_entry.pack()
+		self.level_slider.pack()
+		self.lbl_level.pack()
 		# Creates submit button.
 		self.frm_submit = tk.Frame()
 		self.btn_submit = tk.Button(
@@ -67,11 +85,12 @@ class WellUI:
 		self.window.mainloop()
 
 	def apply_params(self):
-		self.a = WellUI.to_float(self.a_entry.get())
-		self.b = WellUI.to_float(self.b_entry.get())
+		self.a = max(1, WellUI.to_float(self.a_entry.get()))
+		self.b = max(1, WellUI.to_float(self.b_entry.get()))
+		self.energy_level = self.level_slider.get()
 		self.a_entry.delete(0, tk.END)
 		self.b_entry.delete(0, tk.END)
-		self.plot_canvas.replot(self.a, self.b)
+		self.plot_canvas.replot(self.a, self.b, self.energy_level)
 
 	# Static Methods.
 	@staticmethod
