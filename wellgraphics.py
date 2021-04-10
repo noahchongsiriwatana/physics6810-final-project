@@ -4,6 +4,7 @@ import re
 import math
 import tkinter as tk
 import matplotlib
+import seaborn as sns
 import pathlib
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -68,7 +69,7 @@ class WellUI:
 			from_=0,
 			to=10,
 			orient=tk.HORIZONTAL,
-			command=self.apply_params
+			command=self.apply_energy
 		)
 		self.lbl_a = tk.Label(master=self.frm_ellipse, text="Enter a:")
 		self.lbl_b = tk.Label(master=self.frm_ellipse, text="Enter b:")
@@ -99,6 +100,10 @@ class WellUI:
 		self.energy_level = self.level_slider.get()
 		self.a_entry.delete(0, tk.END)
 		self.b_entry.delete(0, tk.END)
+		self.plot_canvas.replot(self.a, self.b, self.energy_level)
+
+	def apply_energy(self, energy_level):
+		self.energy_level = energy_level
 		self.plot_canvas.replot(self.a, self.b, self.energy_level)
 
 	# Static Methods.

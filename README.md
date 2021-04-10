@@ -18,6 +18,7 @@ These are some requirements which may be necessary on clean machines.
 1. Install necessary Python libraries:
 ```bash
 pip3 install matplotlib
+pip3 install seaborn
 brew install pybind11
 brew install tcl-tk
 ```
