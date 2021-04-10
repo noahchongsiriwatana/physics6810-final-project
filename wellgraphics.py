@@ -5,34 +5,46 @@ import math
 import tkinter as tk
 import matplotlib
 import seaborn as sns
+import WellSolver
+import pandas
 import pathlib
+import numpy
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 from matplotlib import patches
-import WellSolver
 
 class WellPlot:
 	def __init__(self, window):
 		self.window = window
 		self.figure = Figure(figsize=(6, 6), dpi=100)
-		self.plot = self.figure.add_subplot(1, 1, 1)
+		self.plot = self.figure.add_subplot(2, 1, 1)
+		self.density_plot = self.figure.add_subplot(2, 1, 2)
 		self.canvas = FigureCanvasTkAgg(self.figure, window)
 		self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
-		self.solver = WellSolver.test_function()
 
 	def replot(self, a, b, energy_level):
-		#self.plot.plot(a, b, color="red", marker="o", linestyle="")
 		self.plot.clear()
+		self.density_plot.clear()
 		self.plot.set_title("Probability Density, a=" + str(a) + ", b=" + str(b) + ", n=" + str(energy_level))
 		self.bounds = patches.Ellipse((0, 0), 2*a, 2*b, edgecolor='black', facecolor='none')
 		self.plot.add_patch(self.bounds)
 		bound = WellPlot.find_bound(a, b)
 		self.plot.set_xlim([-bound, bound])
 		self.plot.set_ylim([-bound, bound])
+		self.plot_density()
 		self.canvas.draw()
-		#self.canvas = FigureCanvasTkAgg(self.figure, self.window)
-		#self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+		self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+
+	def plot_density(self):
+		ax = self.density_plot
+		x=numpy.random.rand(10)
+		y=numpy.random.rand(10)
+		sns.kdeplot(x=x, y=y, ax=ax)
+		print("x: " + str(x))
+		print("y: " + str(y))
+		self.plot.plot(x, y, 's')
+		#self.canvas = FigureCanvasTkAgg()
 
 	@staticmethod
 	def find_bound(a, b):
