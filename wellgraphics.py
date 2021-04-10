@@ -2,7 +2,6 @@
 
 import re
 import math
-import WellSolver
 import tkinter as tk
 import matplotlib
 import pathlib
@@ -10,20 +9,7 @@ matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 from matplotlib import patches
-
-class WellSolver:
-	def __init__(self):
-		#print_banner("Building CFFI Module")
-		ffi = cffi.FFI()
-		current_dir = pathlib.Path().absolute()
-		h_file_name = current_dir / "well_solver.h"
-		with open(h_file_name) as h_file:
-			ffi.cdef(h_file.read())
-			ffi.set_source(
-				"well_solver",
-				'#include "well_solver.h"',
-				libraries=["cmult"]
-			)
+import WellSolver
 
 class WellPlot:
 	def __init__(self, window):
@@ -32,7 +18,7 @@ class WellPlot:
 		self.plot = self.figure.add_subplot(1, 1, 1)
 		self.canvas = FigureCanvasTkAgg(self.figure, window)
 		self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
-		self.solver = WellSolver()
+		self.solver = WellSolver.test_function()
 
 	def replot(self, a, b, energy_level):
 		#self.plot.plot(a, b, color="red", marker="o", linestyle="")
