@@ -15,7 +15,9 @@ from matplotlib.figure import Figure
 from matplotlib import patches
 
 class WellPlot:
-	def __init__(self, window):
+	def __init__(self, window, a, b):
+		self.a = a
+		self.b = b
 		self.window = window
 		self.figure = Figure(figsize=(6, 6), dpi=100)
 		self.plot = self.figure.add_subplot(2, 1, 1)
@@ -24,6 +26,8 @@ class WellPlot:
 		self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
 
 	def replot(self, a, b, energy_level):
+		self.a = a
+		self.b = b
 		self.plot.clear()
 		self.density_plot.clear()
 		self.plot.set_title("Probability Density, a=" + str(a) + ", b=" + str(b) + ", n=" + str(energy_level))
@@ -37,13 +41,12 @@ class WellPlot:
 		self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
 
 	def plot_density(self):
-		ax = self.density_plot
-		x=numpy.random.rand(10)
-		y=numpy.random.rand(10)
-		sns.kdeplot(x=x, y=y, ax=ax)
-		print("x: " + str(x))
-		print("y: " + str(y))
+		x = numpy.random.normal(size=50000)
+		y = x * 3 + numpy.random.normal(size=50000)
+		data = WellSolver.solve(self.a, self.b)
+		self.density_plot.hist2d(x, y, bins=(50, 50), cmap=matplotlib.pyplot.cm.jet)
 		self.plot.plot(x, y, 's')
+		print(data)
 		#self.canvas = FigureCanvasTkAgg()
 
 	@staticmethod
@@ -68,7 +71,7 @@ class WellUI:
 		self.lbl_title = tk.Label(master=self.frm_title, text="2d Particle in a Box Simulation", font=WellUI.title_font)
 		self.lbl_title.pack()
 		# Creates plot.
-		self.plot_canvas = WellPlot(self.window)
+		self.plot_canvas = WellPlot(self.window, self.a, self.b)
 		# Creates ui for ellipse parameters.
 		self.frm_ellipse = tk.Frame(borderwidth=2, relief="solid")
 		self.lbl_eqn = tk.Label(master=self.frm_ellipse, text="(x/a)^2 + (y/b)^2 = 1", font=WellUI.plain_font)
