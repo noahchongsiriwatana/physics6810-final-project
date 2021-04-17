@@ -35,7 +35,7 @@ make
 ## Running 2dwell
 
 ```bash
-python 2dwell
+python 2dwell.py
 ```
 
 ## Notes
