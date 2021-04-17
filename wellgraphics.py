@@ -15,9 +15,11 @@ from matplotlib.figure import Figure
 from matplotlib import patches
 
 class WellPlot:
-	def __init__(self, window, a, b):
+	def __init__(self, window, a, b, energy_level, n):
 		self.a = a
 		self.b = b
+		self.n = n
+		self.energy_level = energy_level
 		self.window = window
 		self.figure = Figure(figsize=(6, 6), dpi=100)
 		self.plot = self.figure.add_subplot(2, 1, 1)
@@ -28,6 +30,7 @@ class WellPlot:
 	def replot(self, a, b, energy_level):
 		self.a = a
 		self.b = b
+		self.energy_level = energy_level
 		self.plot.clear()
 		self.density_plot.clear()
 		self.plot.set_title("Probability Density, a=" + str(a) + ", b=" + str(b) + ", n=" + str(energy_level))
@@ -41,13 +44,15 @@ class WellPlot:
 		self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
 
 	def plot_density(self):
-		x = numpy.random.normal(size=50000)
-		y = x * 3 + numpy.random.normal(size=50000)
-		data = WellSolver.solve(self.a, self.b)
+		x = self.a * numpy.random.normal(size=self.n)
+		y = x * self.b + numpy.random.normal(size=self.n)
+		data = WellSolver.solve(int(self.a), int(self.b), int(self.n), int(self.energy_level))
+		data = numpy.copy(numpy.transpose(data))
+		x = data[0]
+		y = data[1]
+		print(data)
 		self.density_plot.hist2d(x, y, bins=(50, 50), cmap=matplotlib.pyplot.cm.jet)
 		self.plot.plot(x, y, 's')
-		print(data)
-		#self.canvas = FigureCanvasTkAgg()
 
 	@staticmethod
 	def find_bound(a, b):
@@ -71,7 +76,7 @@ class WellUI:
 		self.lbl_title = tk.Label(master=self.frm_title, text="2d Particle in a Box Simulation", font=WellUI.title_font)
 		self.lbl_title.pack()
 		# Creates plot.
-		self.plot_canvas = WellPlot(self.window, self.a, self.b)
+		self.plot_canvas = WellPlot(self.window, self.a, self.b, self.energy_level, 1000)
 		# Creates ui for ellipse parameters.
 		self.frm_ellipse = tk.Frame(borderwidth=2, relief="solid")
 		self.lbl_eqn = tk.Label(master=self.frm_ellipse, text="(x/a)^2 + (y/b)^2 = 1", font=WellUI.plain_font)
@@ -118,7 +123,7 @@ class WellUI:
 		self.plot_canvas.replot(self.a, self.b, self.energy_level)
 
 	def apply_energy(self, energy_level):
-		self.energy_level = energy_level
+		self.energy_level = int(energy_level)
 		self.plot_canvas.replot(self.a, self.b, self.energy_level)
 
 	# Static Methods.

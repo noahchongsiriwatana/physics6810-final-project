@@ -1,6 +1,6 @@
 #ifndef WELLSOLVER_H
 #define WELLSOLVER_H
 
-//py::array_t<double> solve(int a, int b);
+double potential(int a, int b, double x, double y);
 
 #endif
