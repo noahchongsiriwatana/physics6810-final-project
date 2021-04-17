@@ -2,6 +2,14 @@
 
 Visualization tool for 2D infinite square well with variable boundary conditions.
 
+## Overview of Files
+
+- README.md contains high level documentation and instructions.
+- WellSolver.cpp/WellSolver.h build to a c++ library which can be used as a Python module. This functionality is provided using the Pybind11 code.
+- Makefile is used to build all c++ dependencies.
+- 2dwell.py is a wrapper script to run the program.
+- wellgraphics.py contains classes and module imports.
+
 ## Prerequisites
 
 These are some requirements which may be necessary on clean machines.
