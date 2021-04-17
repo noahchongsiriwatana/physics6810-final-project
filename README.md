@@ -21,8 +21,6 @@ These are some requirements which may be necessary on clean machines.
 
 ## Dependencies/Installation
 
-- matplotlib
-
 1. Install necessary Python libraries:
 ```bash
 pip3 install matplotlib
