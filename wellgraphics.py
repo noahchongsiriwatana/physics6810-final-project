@@ -50,7 +50,6 @@ class WellPlot:
 		data = numpy.copy(numpy.transpose(data))
 		x = data[0]
 		y = data[1]
-		print(data)
 		self.density_plot.hist2d(x, y, bins=(50, 50), cmap=matplotlib.pyplot.cm.jet)
 		self.plot.plot(x, y, 's')
 
