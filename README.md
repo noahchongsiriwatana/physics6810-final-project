@@ -22,7 +22,11 @@ pip3 install seaborn
 brew install pybind11
 brew install tcl-tk
 ```
-2. Clean environment, then build C++ libraries:
+2. Clone repository:
+```bash
+git clone https://github.com/noahchongsiriwatana/physics6810-final-project.git
+```
+3. Clean environment, then build C++ libraries:
 ```bash
 make clean
 make
