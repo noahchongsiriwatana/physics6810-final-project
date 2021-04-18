@@ -46,7 +46,7 @@ class WellPlot:
 	def plot_density(self):
 		x = self.a * numpy.random.normal(size=self.n)
 		y = x * self.b + numpy.random.normal(size=self.n)
-		data = WellSolver.solve(int(self.a), int(self.b), int(self.n), int(self.energy_level))
+		data = WellSolver.solve(self.a, self.b, int(self.n), int(self.energy_level))
 		data = numpy.copy(numpy.transpose(data))
 		x = data[0]
 		y = data[1]
