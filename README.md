@@ -2,6 +2,14 @@
 
 Visualization tool for 2D infinite square well with variable boundary conditions.
 
+## Overview of Files
+
+- README.md contains high level documentation and instructions.
+- WellSolver.cpp/WellSolver.h build to a c++ library which can be used as a Python module. This functionality is provided using the Pybind11 code.
+- Makefile is used to build all c++ dependencies.
+- 2dwell.py is a wrapper script to run the program.
+- wellgraphics.py contains classes and module imports.
+
 ## Prerequisites
 
 These are some requirements which may be necessary on clean machines.
@@ -13,8 +21,6 @@ These are some requirements which may be necessary on clean machines.
 
 ## Dependencies/Installation
 
-- matplotlib
-
 1. Install necessary Python libraries:
 ```bash
 pip3 install matplotlib
@@ -22,7 +28,11 @@ pip3 install seaborn
 brew install pybind11
 brew install tcl-tk
 ```
-2. Clean environment, then build C++ libraries:
+2. Clone repository:
+```bash
+git clone https://github.com/noahchongsiriwatana/physics6810-final-project.git
+```
+3. Clean environment, then build C++ libraries:
 ```bash
 make clean
 make
@@ -31,7 +41,7 @@ make
 ## Running 2dwell
 
 ```bash
-python 2dwell
+python 2dwell.py
 ```
 
 ## Notes
