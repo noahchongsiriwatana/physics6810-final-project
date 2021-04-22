@@ -18,7 +18,11 @@ py::array_t<double> solve(double a, double b, int n, int e) {
 
 	for (int x_index = 0; x_index < sqrt(n); ++x_index) {
 		for (int y_index = 0; y_index < sqrt(n); ++y_index) {
-			double x = 1;
+			double x = -a + x_index*2*a/sqrt(n);
+			double y = -b + y_index*2*b/sqrt(n);
+			if (potential(a, b, x, y) < 1) {
+				
+			}
 		}
 	}
 
