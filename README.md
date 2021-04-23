@@ -35,7 +35,14 @@ git clone https://github.com/noahchongsiriwatana/physics6810-final-project.git
 3. Clean environment, then build C++ libraries:
 ```bash
 make clean
+```
+If building on Linux run:
+```bash
 make
+```
+If building on MacOS run:
+```bash
+make macos
 ```
 
 ## Running 2dwell
