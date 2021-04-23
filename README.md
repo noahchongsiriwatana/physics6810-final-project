@@ -1,6 +1,10 @@
-# 2dwell
+# 2DWell
 
 Visualization tool for 2D infinite square well with variable boundary conditions.
+
+I chose this project to give myself a chance to try integrating the different tools we learned in class into a cohesive application. At the highest level, I built a simple event based GUI using Python, and integrated it with plotting using Matplotlib. This GUI then spoke with a C++ program to get the different eigenstates desired. These solutions were found pseudo analytically by borrowing the solutions from a similar problem, namely, the 2d infinite square well. In the future, I would like to try and solve this numerically by using the methods described in session 16 for solving partial differential equations. I feel like this problem would work well with the relaxation method, so hopefully I get a chance to try that later.
+
+Regardless, this project gave me a chance to build upon and explore more deeply the topics in class. I really enjoyed digging into Pybind11 and seeing how to write C++ libraries which can not only be called from a Python script as learned in class, but to be imported directly into the Python code as a module. This required some hairy investigations of how Python handled memory vs. C++, as well as how to properly create data in C++ to be compatible with Python.
 
 ## Overview of Files
 
@@ -54,5 +58,3 @@ python 2dwell.py
 ## Notes
 
 Make sure ```python``` resolves to ```python3``` in your path. The tutorial link for Python should be helpful with this.
-
-
