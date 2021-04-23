@@ -15,11 +15,12 @@ from matplotlib.figure import Figure
 from matplotlib import patches
 
 class WellPlot:
-	def __init__(self, window, a, b, energy_level, n):
+	def __init__(self, window, a, b, energy_level_1, energy_level_2, n):
 		self.a = a
 		self.b = b
 		self.n = n
-		self.energy_level = energy_level
+		self.energy_level_1 = energy_level_1
+		self.energy_level_2 = energy_level_2
 		self.window = window
 		self.figure = Figure(figsize=(6, 6), dpi=100)
 		self.plot = self.figure.add_subplot(2, 1, 1)
@@ -27,13 +28,14 @@ class WellPlot:
 		self.canvas = FigureCanvasTkAgg(self.figure, window)
 		self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
 
-	def replot(self, a, b, energy_level):
+	def replot(self, a, b, energy_level_1, energy_level_2):
 		self.a = a
 		self.b = b
-		self.energy_level = energy_level
+		self.energy_level_1 = energy_level_1
+		self.energy_level_2 = energy_level_2
 		self.plot.clear()
 		self.density_plot.clear()
-		self.plot.set_title("Probability Density, a=" + str(a) + ", b=" + str(b) + ", n=" + str(energy_level))
+		self.plot.set_title("Probability Density, a=" + str(a) + ", b=" + str(b) + ", n1,n2=" + str(energy_level_1) + "," + str(energy_level_2))
 		self.bounds = patches.Ellipse((0, 0), 2*a, 2*b, edgecolor='black', facecolor='none')
 		self.plot.add_patch(self.bounds)
 		bound = WellPlot.find_bound(a, b)
@@ -46,12 +48,12 @@ class WellPlot:
 	def plot_density(self):
 		x = self.a * numpy.random.normal(size=self.n)
 		y = x * self.b + numpy.random.normal(size=self.n)
-		data = WellSolver.solve(self.a, self.b, int(self.n), int(self.energy_level))
+		data = WellSolver.solve(self.a, self.b, int(self.n), int(self.energy_level_1), int(self.energy_level_2))
 		data = numpy.copy(numpy.transpose(data))
 		x = data[0]
 		y = data[1]
-		self.density_plot.hist2d(x, y, bins=(50, 50), cmap=matplotlib.pyplot.cm.jet)
-		self.plot.plot(x, y, 's')
+		self.density_plot.hist2d(x, y, bins=(100, 100), cmap=matplotlib.pyplot.cm.jet)
+		#self.plot.plot(x, y, 's')
 
 	@staticmethod
 	def find_bound(a, b):
@@ -67,7 +69,9 @@ class WellUI:
 		# Initial parameters.
 		self.a = 1
 		self.b = 1
-		self.energy_level = 0
+		self.energy_level_n1 = 0
+		self.energy_level_n2 = 0
+		self.resolution = 100000;
 		# Creates window.
 		self.window = tk.Tk()
 		# Creates title.
@@ -75,7 +79,7 @@ class WellUI:
 		self.lbl_title = tk.Label(master=self.frm_title, text="2d Particle in a Box Simulation", font=WellUI.title_font)
 		self.lbl_title.pack()
 		# Creates plot.
-		self.plot_canvas = WellPlot(self.window, self.a, self.b, self.energy_level, 1000)
+		self.plot_canvas = WellPlot(self.window, self.a, self.b, self.energy_level_n1, self.energy_level_n2, self.resolution)
 		# Creates ui for ellipse parameters.
 		self.frm_ellipse = tk.Frame(borderwidth=2, relief="solid")
 		self.lbl_eqn = tk.Label(master=self.frm_ellipse, text="(x/a)^2 + (y/b)^2 = 1", font=WellUI.plain_font)
@@ -83,22 +87,32 @@ class WellUI:
 		# Creates entry fields.
 		self.a_entry = tk.Entry(master=self.frm_ellipse)
 		self.b_entry = tk.Entry(master=self.frm_ellipse)
-		self.level_slider = tk.Scale(
+		self.level_slider_n1 = tk.Scale(
 			master=self.frm_ellipse,
 			from_=0,
-			to=10,
+			to=3,
+			orient=tk.HORIZONTAL,
+			command=self.apply_energy
+		)
+		self.level_slider_n2 = tk.Scale(
+			master=self.frm_ellipse,
+			from_=0,
+			to=3,
 			orient=tk.HORIZONTAL,
 			command=self.apply_energy
 		)
 		self.lbl_a = tk.Label(master=self.frm_ellipse, text="Enter a:")
 		self.lbl_b = tk.Label(master=self.frm_ellipse, text="Enter b:")
-		self.lbl_level = tk.Label(master=self.frm_ellipse, text="Set energy:")
+		self.lbl_level_n1 = tk.Label(master=self.frm_ellipse, text="Set 1st Energy:")
+		self.lbl_level_n2 = tk.Label(master=self.frm_ellipse, text="Set 2nd Energy:")
 		self.lbl_a.pack()
 		self.a_entry.pack()
 		self.lbl_b.pack()
 		self.b_entry.pack()
-		self.lbl_level.pack()
-		self.level_slider.pack()
+		self.lbl_level_n1.pack()
+		self.level_slider_n1.pack()
+		self.lbl_level_n2.pack()
+		self.level_slider_n2.pack()
 		# Creates submit button.
 		self.frm_submit = tk.Frame()
 		self.btn_submit = tk.Button(
@@ -116,14 +130,20 @@ class WellUI:
 	def apply_params(self, energy_level=0):
 		self.a = max(1, WellUI.to_float(self.a_entry.get()))
 		self.b = max(1, WellUI.to_float(self.b_entry.get()))
-		self.energy_level = self.level_slider.get()
+		higher = max(self.a, self.b)
+		lower = min(self.a, self.b)
+		self.a = higher
+		self.b = lower
+		self.energy_level_n1 = self.level_slider_n1.get()
+		self.energy_level_n2 = self.level_slider_n2.get()
 		self.a_entry.delete(0, tk.END)
 		self.b_entry.delete(0, tk.END)
-		self.plot_canvas.replot(self.a, self.b, self.energy_level)
+		self.plot_canvas.replot(self.a, self.b, self.energy_level_n1, self.energy_level_n2)
 
 	def apply_energy(self, energy_level):
-		self.energy_level = int(energy_level)
-		self.plot_canvas.replot(self.a, self.b, self.energy_level)
+		self.energy_level_n1 = self.level_slider_n1.get()
+		self.energy_level_n2 = self.level_slider_n2.get()
+		self.plot_canvas.replot(self.a, self.b, self.energy_level_n1, self.energy_level_n2)
 
 	# Static Methods.
 	@staticmethod
