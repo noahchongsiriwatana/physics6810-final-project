@@ -46,11 +46,6 @@ py::array_t<double> solve(double a, double b, int n, int e1, int e2) {
 		}
 	}
 
-	/*for (int i = 0; i < n; i+=2) {
-		data[i] = a*sin(double(i));
-		data[i+1] = b*sin(double(i) / 2.);
-	}*/
-
 	py::capsule free_when_done(data, [](void *f) {
 		double *data = reinterpret_cast<double *>(f);
 		delete[] data;
@@ -68,7 +63,6 @@ py::array_t<double> solve(double a, double b, int n, int e1, int e2) {
 PYBIND11_MODULE(WellSolver, m) {
 	m.doc() = "Python binding for WellSolver.";
 	m.def("solve", &solve, "solve a 2D Well problem numerically.");
-	//return m.ptr();
 }
 
 double potential(double a, double b, double x, double y) {
@@ -79,7 +73,9 @@ double potential(double a, double b, double x, double y) {
 }
 
 double wavefunction (double a, double b, double x, double y, int e1, int e2) {
-	return sin(e1*M_PI*x/x_length(a, b, y))*sin(e2*M_PI*y/y_length(a, b, x));
+	//return sin(e1*M_PI*x/x_length(a, b, y))*sin(e2*M_PI*y/y_length(a, b, x));
+	double theta = atan2(y, x);
+	return radial(a, b, sqrt(x*x+y*y), theta, e1, e2) * angular(theta, e2);
 }
 
 double x_length (double a, double b, double y) {
@@ -88,4 +84,17 @@ double x_length (double a, double b, double y) {
 
 double y_length (double a, double b, double x) {
 	return b*sqrt(1-x*x/(a*a));
+}
+
+double radial (double a, double b, double r, double theta, int z, int l) {
+	double x_rel = a*sin(theta);
+	double y_rel = b*cos(theta);
+	double r_rel = a*b/sqrt(x_rel*x_rel + y_rel*y_rel);
+	double N = sqrt(z);
+	return N*jn(l, z*r/r_rel);
+}
+
+double angular (double theta, int l) {
+	double N = pow((l+1), 3);
+	return N*cos(theta*l);
 }

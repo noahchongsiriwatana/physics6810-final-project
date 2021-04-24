@@ -69,7 +69,7 @@ class WellUI:
 		# Initial parameters.
 		self.a = 1
 		self.b = 1
-		self.energy_level_n1 = 0
+		self.energy_level_n1 = 1
 		self.energy_level_n2 = 0
 		self.resolution = 100000;
 		# Creates window.
@@ -89,15 +89,15 @@ class WellUI:
 		self.b_entry = tk.Entry(master=self.frm_ellipse)
 		self.level_slider_n1 = tk.Scale(
 			master=self.frm_ellipse,
-			from_=0,
-			to=3,
+			from_= 1,
+			to= 5,
 			orient=tk.HORIZONTAL,
 			command=self.apply_energy
 		)
 		self.level_slider_n2 = tk.Scale(
 			master=self.frm_ellipse,
-			from_=0,
-			to=3,
+			from_= 0,
+			to= 5,
 			orient=tk.HORIZONTAL,
 			command=self.apply_energy
 		)
