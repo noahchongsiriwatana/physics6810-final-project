@@ -31,6 +31,8 @@ pip3 install matplotlib
 pip3 install seaborn
 brew install pybind11
 brew install tcl-tk
+brew install boost --with-python
+brew install boost-python
 ```
 2. Clone repository:
 ```bash
