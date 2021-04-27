@@ -16,6 +16,7 @@
 #include <iostream>
 #include <math.h>
 #include <random>
+#include <boost/math/special_functions/bessel.hpp>
 
 namespace py = pybind11;
 using namespace std;
@@ -143,11 +144,12 @@ double wavefunction (double a, double b, double x, double y, int e1, int e2) {
 /*
  * Calculates the radial component of wavefunction.
  */
-double radial (double a, double b, double r, double theta, int z, int l) {
+double radial (double a, double b, double r, double theta, int k, int l) {
 	double x_rel = a*sin(theta);
 	double y_rel = b*cos(theta);
 	double r_rel = a*b/sqrt(x_rel*x_rel + y_rel*y_rel);
-	double N = sqrt(z);
+	double N = sqrt(k);
+	double z = boost::math::cyl_bessel_j_zero(double(l), k);
 	return N*jn(l, z*r/r_rel);
 }
 
@@ -155,6 +157,6 @@ double radial (double a, double b, double r, double theta, int z, int l) {
  * Calculates angular component of wavefunction.
  */
 double angular (double theta, int l) {
-	double N = pow((l+1), 3);
+	double N = pow((l+1), 2.);
 	return N*cos(theta*l);
 }
