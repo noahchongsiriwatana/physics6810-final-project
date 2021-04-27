@@ -35,7 +35,7 @@ brew install boost --with-python
 brew install boost-python
 ```
 
-To install boost on Linux look [here](https://www.boost.org/doc/libs/1_61_0/more/getting_started/unix-variants.html)
+To install boost on Linux look [here](https://www.boost.org/doc/libs/1_61_0/more/getting_started/unix-variants.html).
 
 2. Clone repository:
 ```bash
